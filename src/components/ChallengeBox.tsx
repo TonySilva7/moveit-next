@@ -4,22 +4,18 @@ import {challengeContext} from "../contexts/ChallengeContext";
 
 export function ChallengeBox() {
 
-    //----------------------------------------------
-    const contextData = useContext(challengeContext);
-    console.log(contextData);
-    // ---------------------------------------------
-
-    const hasActiveChallenge = true;
+    //using context api
+    const { activeChallenge } = useContext(challengeContext);
 
     return (
         <div className={styles.challengeBoxContainer}>
-            { hasActiveChallenge ? (
+            { activeChallenge ? (
                 <div className={styles.challengeActive}>
-                    <header>Ganhe 400xp</header>
+                    <header>Ganhe {activeChallenge.amount} xp</header>
                     <main>
-                        <img src="icons/body.svg" alt="Icon body"/>
+                        <img src={`icons/${activeChallenge.type}.svg`} alt="Icon body"/>
                         <strong>Novo desafio</strong>
-                        <p>Levante e faça uma caminhada de 3 minutos</p>
+                        <p> { activeChallenge.description } </p>
                     </main>
                     <footer>
                         <button type="button" className={styles.challengeFailedButton}>Falhei</button>
