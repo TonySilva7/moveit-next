@@ -38,7 +38,7 @@ export function ChallengesProvider({ children }: ChallengeProviderProps) {
   // constants
   const experienceToNextLevel = Math.pow((level + 1) * 4, 2);
   
-  // effects
+  // effects - Browser Notification
   useEffect(() => {
     Notification.requestPermission();
   }, [])
@@ -54,6 +54,7 @@ export function ChallengesProvider({ children }: ChallengeProviderProps) {
     
     setActiveChallenge(challenge);
     
+    // Browser Notification
     new Audio("/notification.mp3").play();
     if (Notification.permission === "granted") {
       new Notification("Novo desafio 🏅🎉", {
