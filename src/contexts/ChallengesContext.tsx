@@ -1,4 +1,4 @@
-import {createContext, ReactNode, useState} from "react";
+import { createContext, ReactNode, useState } from "react";
 import challenges from "../../challenges.json";
 
 // typing variables
@@ -67,7 +67,7 @@ export function ChallengesProvider({ children }: ChallengeProviderProps) {
         resetChallenge
       }
     }>
-      {children}
+      { children }
     </ChallengesContext.Provider>
   );
 }
