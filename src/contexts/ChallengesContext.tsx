@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import challenges from "../../challenges.json";
+import Cookies from "js-cookie";
 
 // typing variables
 interface challenge {
@@ -22,17 +23,20 @@ interface challengeContextData {
 
 interface ChallengeProviderProps {
   children: ReactNode;
+  level: number;
+  currentExperience: number;
+  challengeCompleted: number
 }
 
 // exporting
 export const ChallengesContext = createContext({} as challengeContextData);
 
-export function ChallengesProvider({ children }: ChallengeProviderProps) {
+export function ChallengesProvider({ children, ...rest }: ChallengeProviderProps) {
   
   // states
-  const [level, setLevel] = useState(1);
-  const [currentExperience, setCurrentExperience] = useState(0);
-  const [challengeCompleted, setChallengeCompleted] = useState(0);
+  const [level, setLevel] = useState(rest.level ?? 1);
+  const [currentExperience, setCurrentExperience] = useState(rest.currentExperience ?? 0);
+  const [challengeCompleted, setChallengeCompleted] = useState(rest.challengeCompleted ?? 0);
   const [activeChallenge, setActiveChallenge] = useState(null);
   
   // constants
@@ -42,6 +46,12 @@ export function ChallengesProvider({ children }: ChallengeProviderProps) {
   useEffect(() => {
     Notification.requestPermission();
   }, [])
+  
+  useEffect(() => {
+    Cookies.set("level", String(level))
+    Cookies.set("currentExperience", String(currentExperience))
+    Cookies.set("challengeCompleted", String(challengeCompleted))
+  }, [level, currentExperience, challengeCompleted]);
   
   // functions
   function levelUp() {
@@ -55,7 +65,7 @@ export function ChallengesProvider({ children }: ChallengeProviderProps) {
     setActiveChallenge(challenge);
     
     // Browser Notification
-    new Audio("/notification.mp3").play();
+    new Audio("/notification.mp3").play().catch(() => "");
     if (Notification.permission === "granted") {
       new Notification("Novo desafio 🏅🎉", {
         body: `Valendo ${challenge.amount} xp!`
