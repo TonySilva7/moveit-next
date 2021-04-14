@@ -1,6 +1,7 @@
+import Cookies from "js-cookie";
 import { createContext, ReactNode, useEffect, useState } from "react";
 import challenges from "../../challenges.json";
-import Cookies from "js-cookie";
+import { LevelUpModal } from "../components/LevelUpModal";
 
 // typing variables
 interface challenge {
@@ -19,6 +20,7 @@ interface challengeContextData {
   startNewChallenge: () => void;
   resetChallenge: () => void;
   completeChallenge: () => void;
+  closeLevelUpModal: () => void;
 }
 
 interface ChallengeProviderProps {
@@ -37,25 +39,32 @@ export function ChallengesProvider({ children, ...rest }: ChallengeProviderProps
   const [level, setLevel] = useState(rest.level ?? 1);
   const [currentExperience, setCurrentExperience] = useState(rest.currentExperience ?? 0);
   const [challengeCompleted, setChallengeCompleted] = useState(rest.challengeCompleted ?? 0);
+  
   const [activeChallenge, setActiveChallenge] = useState(null);
+  const [isLevelUpModaOpen, setIsLevelUpModaOpen] = useState(false);
   
   // constants
   const experienceToNextLevel = Math.pow((level + 1) * 4, 2);
   
   // effects - Browser Notification
   useEffect(() => {
-    Notification.requestPermission();
-  }, [])
+    if (Notification.permission !== "granted") Notification.requestPermission();
+  }, []);
   
   useEffect(() => {
-    Cookies.set("level", String(level))
-    Cookies.set("currentExperience", String(currentExperience))
-    Cookies.set("challengeCompleted", String(challengeCompleted))
+    Cookies.set("level", String(level));
+    Cookies.set("currentExperience", String(currentExperience));
+    Cookies.set("challengeCompleted", String(challengeCompleted));
   }, [level, currentExperience, challengeCompleted]);
   
   // functions
   function levelUp() {
     setLevel(level + 1);
+    setIsLevelUpModaOpen(true);
+  }
+  
+  function closeLevelUpModal() {
+    setIsLevelUpModaOpen(false);
   }
   
   function startNewChallenge() {
@@ -68,7 +77,7 @@ export function ChallengesProvider({ children, ...rest }: ChallengeProviderProps
     new Audio("/notification.mp3").play().catch(() => "");
     if (Notification.permission === "granted") {
       new Notification("Novo desafio 🏅🎉", {
-        body: `Valendo ${challenge.amount} xp!`
+        body: `Valendo ${ challenge.amount } xp!`
       });
     }
   }
@@ -105,10 +114,13 @@ export function ChallengesProvider({ children, ...rest }: ChallengeProviderProps
         levelUp,
         startNewChallenge,
         resetChallenge,
-        completeChallenge
+        completeChallenge,
+        closeLevelUpModal
       }
     }>
       { children }
+      { isLevelUpModaOpen && <LevelUpModal/> }
+    
     </ChallengesContext.Provider>
   );
 }
