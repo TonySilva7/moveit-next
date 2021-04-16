@@ -113,3 +113,13 @@
 .challengeContainer p img {
   margin-bottom: 1rem;
 }
+
+@media (max-width: 420px) {
+  .challengeActive footer {
+    margin-top: 20px;
+  }
+
+  .challengeBoxContainer {
+    margin-bottom: 30px;
+  }
+}
