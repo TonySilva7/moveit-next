@@ -29,9 +29,3 @@ span.currentExperience {
   transform: translateX(-50%);
   color: var(--green);
 }
-
-/*@media (max-width: 800px) {*/
-/*  .experienceBar {*/
-/*    margin-bottom: 4rem;*/
-/*  }*/
-/*}*/
